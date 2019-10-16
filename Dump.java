@@ -1,66 +1,96 @@
 
 public class Dump{
     MyThread[] allThreads;
-    MyLock lock1 = new MyLock();
-    MyLock lock2 = new MyLock();
+    MyLock[] locks;
 
-    public Dump()
+    
+    public Dump(int numLocks, int numThreads)
     {
-        // for the sake of example instantiating an array and populating. Typically this constructor
-        // would only have instantiation of the thread array, not population of it.
-        populateSampleDumpfile();
-        
+        boolean defaultCycle = false;
+        populateLocks(numLocks);
+        populateThreads(numThreads, defaultCycle);
     }
 
-    public void populateSampleDumpfile()
+    public Dump(int numLocks, int numThreads, boolean cycle)
     {
-        // for this example we will have 5 threads 
-        allThreads = new MyThread[]
+        populateLocks(numLocks);
+        populateThreads(numThreads, cycle);
+    }
+
+    public void populateLocks(int maxLocks)
+    {
+        locks = new MyLock[maxLocks];
+        for(int i = 0; i < locks.length; i++)
         {
-            new MyThread('A'), 
-            new MyThread('B'),
-            new MyThread('C'),
-            new MyThread('D'),
-            new MyThread('E')
+            locks[i] = new MyLock();
+        }
+    }
+
+    public void populateThreads(int maxThreads, boolean cycle)
+    {
+        // If no threads provided
+        if(maxThreads == 0)
+            return;
+
+        allThreads = new MyThread[maxThreads];
+        
+
+        for(int i = 0; i < maxThreads-1; i++)
+        {
+            MyThread customThread;
+            // wrap around and re-use locks in the case where we have less # locks than threads               
+            char threadName = getChar(i);
+            customThread = new MyThread(""+threadName, locks[i % locks.length], locks[i+1 % locks.length]); 
+            allThreads[i] = customThread;
+        }
+        
+        // special case for the last one: if user wants a cycle - connect back to first lock, otherwise create a dummy lock.
+        
+            int last = maxThreads-1;
+            if(cycle == true)
+            {
+                allThreads[last] = new MyThread(""+getChar(last), locks[last], locks[0]);
+            }
+            else
+            {
+                allThreads[last] = new MyThread(""+getChar(last), locks[last], new MyLock());
+            }
+           
+
+    }
+
+    private char getChar(int i)
+    {
+        char name = (char)('A' + i);
+        return name;
+    }
+
+    public void startThreads()
+    {
+        for(int i = 0; i < allThreads.length; i++)
+        {
+            allThreads[i].start();
+        }
+    }
+
+    public void createSimpleDeadlock()
+    {
+        MyLock lock1 = new MyLock();
+        MyLock lock2 = new MyLock();
+
+        
+        MyThread threadA = new MyThread("A", lock1, lock2);
+        MyThread threadB = new MyThread("B", lock2, lock1);
+        
+
+        allThreads = new MyThread[]
+        { 
+            threadA,
+            threadB
         };
 
-        threadAProc();
-        threadBProc();
     }
-
-    public void threadAProc()
-    {
-        MyThread a = new MyThread('A');
-
-        a.acquireLock(lock1);
-        computeLong(a);
-        a.acquireLock(lock2);
-        computeShort(a);
-        a.releaseLock(lock2);
-        a.releaseLock(lock1);
-    }
-
-    public void threadBProc()
-    {
-        MyThread b = new MyThread('B');
-        
-        b.acquireLock(lock2);
-        computeLong(b);
-        b.acquireLock(lock1);
-        computeShort(b);
-        b.releaseLock(lock1);
-        b.releaseLock(lock2);   
-    }
-
-    private void computeLong(MyThread t)
-    {
-        System.out.println("Calling computeLong() from Thread:"+t.getName());
-    }
-
-    private void computeShort(MyThread t)
-    {
-        System.out.println("Calling computeShort() from Thread:"+t.getName());
-    }
+    
 
 
 

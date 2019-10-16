@@ -9,6 +9,9 @@ public class MyLock{
 		this.owner = owner;
 	}
 
-
+	@Override
+	public String toString() {
+		return "owner = "+getOwner();
+	}
     
 }
