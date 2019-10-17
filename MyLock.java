@@ -1,6 +1,12 @@
 
 public class MyLock{
     private MyThread owner;
+	private String name;
+
+	public MyLock(String name)
+	{
+		this.name = name;
+	}
 
 	/**
 	 * 
@@ -20,7 +26,7 @@ public class MyLock{
 
 	@Override
 	public String toString() {
-		return "owner = "+getOwner();
+		return this.name;
 	}
     
 }

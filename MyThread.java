@@ -64,13 +64,19 @@ class MyThread extends Thread{
 
     @Override
     public void run() {
+        // acquire Lock 1
         this.acquireLock(lock1);
 
+        // compute
         compute();
 
-        this.acquireLock(lock2);
+        // acquire Lock 2
+        this.acquireLock(lock2);   
+
+        // release Lock 2    
         this.releaseLock(lock2);
 
+        // release Lock 1
         this.releaseLock(lock1);
     }
 

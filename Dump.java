@@ -33,7 +33,7 @@ public class Dump{
         locks = new MyLock[maxLocks];
         for(int i = 0; i < locks.length; i++)
         {
-            locks[i] = new MyLock();
+            locks[i] = new MyLock("Lock "+i);
         }
     }
 
@@ -68,7 +68,7 @@ public class Dump{
         }
         else
         {
-            allThreads[last] = new MyThread(""+getChar(last), locks[last], new MyLock());
+            allThreads[last] = new MyThread(""+getChar(last), locks[last], new MyLock("DummyLock"));
         }
            
 
@@ -95,5 +95,7 @@ public class Dump{
             allThreads[i].start();
         }
     }
+
+    
 
 }

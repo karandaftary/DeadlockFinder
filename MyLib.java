@@ -90,6 +90,9 @@ public class MyLib
                         // massage HashMap into a well-formed array with all threads involved in the deadlock
                         Set<MyThread> keys = dependencyMap.keySet();
                         MyThread[] deadLocks = keys.toArray(new MyThread[keys.size()]);
+
+                        // print dependencies
+                        showDependencies(dependencyMap);
                         return deadLocks;
                     }
                     else
@@ -103,6 +106,16 @@ public class MyLib
         // At this point all threads have been examined for their dependencies
         // No Dependencies found, hence return null
         return null;
+    }
+
+    private static void showDependencies(HashMap<MyThread,MyThread> example)
+    {
+        System.out.println("Deadlock found with the following Dependency Map");
+        for (MyThread name: example.keySet()){
+            String key = name.toString();
+            String value = example.get(name).toString();  
+            System.out.println(key + " -> " + value);  
+} 
     }
 
     
