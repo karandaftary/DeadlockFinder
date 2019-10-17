@@ -5,7 +5,7 @@ class MyThread extends Thread{
 
 
     /**
-     * 
+     * For the purposes of this assignment we will construct Threads with 2 locks. This need not be the true implementation of Threads. 
      * @param name Thread name - a user friend representation of thread 
      * @param l1 Lock 1
      * @param l2 Lock 2
@@ -26,6 +26,10 @@ class MyThread extends Thread{
         super(name);
     }
 
+    /**
+     * Acquires lock so that no other thread can use this lock
+     * @param l the lock to be owned by a thread
+     */
     public void acquireLock(MyLock l)
     {
         assert(l != null);
@@ -42,6 +46,10 @@ class MyThread extends Thread{
 
     }
 
+    /**
+     * Releases lock so that it can be owned by other threads.  
+     * @param l Lock to be released.
+     */
     public void releaseLock(MyLock l)
     {
         assert(l != null);
@@ -66,6 +74,9 @@ class MyThread extends Thread{
         this.releaseLock(lock1);
     }
 
+    /**
+     * Short computation that prints a statement and waits for 5 seconds
+     */
     private void compute(){
         try {
             System.out.println("compute() called from Thread: "+this.getName());

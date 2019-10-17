@@ -38,11 +38,11 @@ public class MyLib
         }
     }
 
-        // return thread IDs involved in deadlock OR null if no deadlock found
+    
     /**
-     * 
+     * Identifies deadlocks in a given dumpfile. 
      * @param d Dump file to examine
-     * @return Returns a collection of ThreadIDs involved in Deadlock, null otherwise
+     * @return Returns an array of Threads involved in Deadlock, null otherwise
      */
     public static MyThread[] findDeadLock(Dump d)
     {
@@ -50,7 +50,7 @@ public class MyLib
         Overall algorithm: 
         keep track of dependencies in a HashMap<Current Thread, Waiting On Thread>
         loop through all threads in dumpfile 
-            for each thread add add it's dependency to the HashMap
+            for each thread add it's dependency to the HashMap
             if dependency exists in the map - follow it and check if the current thread exists 
                 in following dependencies if you find current thread, return the map and current thread
         Once you finish the loop and you haven't returned anything - you are guaranteed that 
@@ -62,30 +62,39 @@ public class MyLib
             return null; // return empty array
 
         // core scenario: dump file >= 2 threads which could be involved in a deadlock
-        HashMap<MyThread,MyThread> map = new HashMap<MyThread,MyThread>();
+        // A dependency map which stores dependencies in the form of Thread A -> Thread B
+        // which means Thread A depends on Thread B. 
+        HashMap<MyThread,MyThread> dependencyMap = new HashMap<MyThread,MyThread>();
         for(int i = 0; i < d.allThreads.length; i++)
         {
+            // current thread 
             MyThread t = d.allThreads[i];
+            // identify dependent thread if it exists. A dependency exists if current thread is 
+            // waiting to acquire a lock that is already acquired by another thread
             MyThread w = MyLib.getDependentThread(t);
-            if(!map.containsKey(w))
-                map.put(t, w);
+
+            // add the dependency if it doesn't exist to dependency map
+            if(!dependencyMap.containsKey(w))
+                dependencyMap.put(t, w);
             else
             {
-                MyThread cursor = map.get(w);
+                // cycle through the dependencies, checking to see if the dependency is the current thread
+                MyThread cursor = dependencyMap.get(w);
                 while(cursor != null)
                 {
                     if(cursor == t)
                     {
-                        map.put(t,w); // put the current thread, and deadlock into map
+                        // put the current thread, and its dependency into map --> this is the DEADLOCK!
+                        dependencyMap.put(t,w); 
                         
-                        // massage HashMap into a well-formed array with deadlocks
-                        Set<MyThread> keys = map.keySet();
+                        // massage HashMap into a well-formed array with all threads involved in the deadlock
+                        Set<MyThread> keys = dependencyMap.keySet();
                         MyThread[] deadLocks = keys.toArray(new MyThread[keys.size()]);
                         return deadLocks;
                     }
                     else
                     {
-                        cursor = map.get(cursor);
+                        cursor = dependencyMap.get(cursor);
                     }
                 }
             }

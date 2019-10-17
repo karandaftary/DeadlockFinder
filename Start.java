@@ -4,8 +4,8 @@ public class Start {
 
     public static void main(String[] args) throws InterruptedException {
 
-        System.err.println("\nFinding Deadlocks in a Dump file"); 
-        System.err.println("Printing out sample tests instead of unit tests to keep the demonstration simple, yet cover the basics.");
+        System.out.println("\nFinding Deadlocks in a Dump file"); 
+        System.out.println("Printing out sample tests instead of unit tests to keep the demonstration simple, yet cover the basics.");
 
         runAllTests();
 
@@ -33,7 +33,7 @@ public class Start {
 
     private static void testFindingDeadLock(String testCaseTitle, int numLocks, int numThreads, boolean cyclic) {
         // setup
-        System.err.println("\nTesting: " + testCaseTitle);
+        System.out.println("\nTesting: " + testCaseTitle);
         Dump sampleFile = new Dump(numLocks, numThreads, cyclic);
         sampleFile.startThreads();
         try {
@@ -46,7 +46,7 @@ public class Start {
         MyThread[] affectedThreads = MyLib.findDeadLock(sampleFile);
 
         // report
-        System.err.println("Threads involved in deadlock " + Arrays.toString(affectedThreads));        
+        System.out.println("Threads involved in deadlock " + Arrays.toString(affectedThreads));        
     }
 
 }

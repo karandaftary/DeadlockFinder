@@ -3,20 +3,22 @@ public class Dump{
     MyThread[] allThreads;
     MyLock[] locks;
 
-    
-    public Dump(int numLocks, int numThreads)
-    {
-        boolean defaultCycle = false;
-        populateLocks(numLocks);
-        populateThreads(numThreads, defaultCycle);
-    }
-
+    /**
+     * 
+     * @param numLocks # locks the dump file should use
+     * @param numThreads # threads the dump file should create and execute
+     * @param cycle specifies whether the threads depend on each other or not
+     */
     public Dump(int numLocks, int numThreads, boolean cycle)
     {
         populateLocks(numLocks);
         populateThreads(numThreads, cycle);
     }
 
+    /**
+     * 
+     * @param maxLocks populate locks that will be used by threads
+     */
     public void populateLocks(int maxLocks)
     {
         locks = new MyLock[maxLocks];
@@ -26,6 +28,11 @@ public class Dump{
         }
     }
 
+    /**
+     * 
+     * @param maxThreads # threads 
+     * @param cycle true = configures threads in a way that forces deadlock; false = no dependency of threads created
+     */
     public void populateThreads(int maxThreads, boolean cycle)
     {
         // If no threads provided
@@ -59,12 +66,20 @@ public class Dump{
 
     }
 
+    /**
+     * 
+     * @param i input a number between 0 and 26 
+     * @return returns character representation of i from A to Z.
+     */
     private char getChar(int i)
     {
         char name = (char)('A' + i);
         return name;
     }
 
+    /**
+     * Start thread executions. If threads are cyclic i.e. 2 or more threads have dependency on each other, this will force a deadlock.
+     */
     public void startThreads()
     {
         for(int i = 0; i < allThreads.length; i++)
@@ -72,26 +87,5 @@ public class Dump{
             allThreads[i].start();
         }
     }
-
-    public void createSimpleDeadlock()
-    {
-        MyLock lock1 = new MyLock();
-        MyLock lock2 = new MyLock();
-
-        
-        MyThread threadA = new MyThread("A", lock1, lock2);
-        MyThread threadB = new MyThread("B", lock2, lock1);
-        
-
-        allThreads = new MyThread[]
-        { 
-            threadA,
-            threadB
-        };
-
-    }
-    
-
-
 
 }

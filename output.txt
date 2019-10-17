@@ -1,0 +1,26 @@
+
+Finding Deadlocks in a Dump file
+Printing out sample tests instead of unit tests to keep the demonstration simple, yet cover the basics.
+
+Testing: CYCLIC THREADS
+compute() called from Thread: A
+compute() called from Thread: C
+compute() called from Thread: B
+compute() called from Thread: D
+Threads involved in deadlock [D, B, A, C]
+
+Testing: 1 THREAD
+compute() called from Thread: A
+Threads involved in deadlock null
+
+Testing: 2 LOCKS 2 THREADS
+compute() called from Thread: A
+compute() called from Thread: B
+Threads involved in deadlock [A, B]
+
+Testing: ACYCLIC THREADS
+compute() called from Thread: B
+compute() called from Thread: A
+compute() called from Thread: D
+compute() called from Thread: C
+Threads involved in deadlock null
