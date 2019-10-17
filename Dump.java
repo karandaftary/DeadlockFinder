@@ -4,6 +4,15 @@ public class Dump{
     MyLock[] locks;
 
     /**
+     * Default constructor which creates 4 threads, 4 locks, and no cycles in threads
+     */
+    public Dump()
+    { 
+        populateLocks(4);
+        populateThreads(4, true);
+    }
+
+    /**
      * 
      * @param numLocks # locks the dump file should use
      * @param numThreads # threads the dump file should create and execute
@@ -52,16 +61,15 @@ public class Dump{
         }
         
         // special case for the last one: if user wants a cycle - connect back to first lock, otherwise create a dummy lock.
-        
-            int last = maxThreads-1;
-            if(cycle == true)
-            {
-                allThreads[last] = new MyThread(""+getChar(last), locks[last], locks[0]);
-            }
-            else
-            {
-                allThreads[last] = new MyThread(""+getChar(last), locks[last], new MyLock());
-            }
+        int last = maxThreads-1;
+        if(cycle == true)
+        {
+            allThreads[last] = new MyThread(""+getChar(last), locks[last], locks[0]);
+        }
+        else
+        {
+            allThreads[last] = new MyThread(""+getChar(last), locks[last], new MyLock());
+        }
            
 
     }
